@@ -9,6 +9,7 @@
   - [**SELECT Quiz**](#select-quiz)
   - [**SELECT from world**](#select-from-world)
   - [**SELECT from nobel**](#select-from-nobel)
+  - [**Using nested SELECT**](#using-nested-select)
   - [**SELECT in SELECT**](#select-in-select)
   - [**SUM and COUNT**](#sum-and-count)
   - [**JOIN**](#join)
@@ -22,14 +23,14 @@
 - [SQL Zoo](https://sqlzoo.net/wiki/SELECT_basics)
 - [SQL PD](https://sqlpd.com)
 
-| Table                          | Keywords | Filters & Values                                           |
-| ------------------------------ | -------- | ---------------------------------------------------------- |
-| SELECT (columns and processed) | DISTINCT | Numeric and string comparison: =, <, <=, >, >=, !=, <>, () |
-| FROM (table)                   | LIMIT    | List possible values: IN (value1, value2, ...)             |
-| WHERE (filter rows)            | ASC      | Inclusive ranges: BETWEEN min AND max                      |
-| GROUP BY                       | DESC     | Logical Operators: NOT, AND, OR, XOR                       |
-| HAVING                         |          |                                                            |
-| ORDER BY (sort rows)           |          |                                                            |
+| Table                          | Keywords | Filters & Values                                                           |
+| ------------------------------ | -------- | -------------------------------------------------------------------------- |
+| SELECT (columns and processed) | DISTINCT | Binary Numeric and string comparison operator: =, <, <=, >, >=, !=, <>, () |
+| FROM (table)                   | LIMIT    | Add ALL or ANY when right side of the operator have multiple values        |
+| WHERE (filter rows)            | ASC      | List one value: = value                                                    |
+| GROUP BY                       | DESC     | List many values: IN (value1, value2, ...)                                 |
+| HAVING                         |          | Inclusive ranges: BETWEEN min AND max                                      |
+| ORDER BY (sort rows)           |          | Logical Operators: NOT, AND, OR, XOR                                       |
 
 ## **SELECT basics**
 
@@ -760,6 +761,143 @@ ORDER BY subject IN ('Physics','Chemistry'), subject, winner
 | Bruce Merrifield    | Chemistry  |
 | Carlo Rubbia        | Physics    |
 | Simon van der Meer  | Physics    |
+
+**[⬆ back to top](#table-of-contents)**
+
+## **Using nested SELECT**
+
+| name        | continent | area    | population | gdp          |
+| ----------- | --------- | ------- | ---------- | ------------ |
+| Afghanistan | Asia      | 652230  | 25500100   | 20343000000  |
+| Albania     | Europe    | 28748   | 2831741    | 12960000000  |
+| Algeria     | Africa    | 2381741 | 37100000   | 188681000000 |
+| Andorra     | Europe    | 468     | 78115      | 3712000000   |
+| Angola      | Africa    | 1246700 | 20609294   | 100990000000 |
+
+```sql
+-- List each country in the same continent as 'Brazil'.
+SELECT continent
+FROM world
+WHERE name = 'Brazil'
+
+SELECT name
+FROM world
+WHERE continent = (SELECT continent FROM world WHERE name = 'Brazil')
+```
+
+| continent     |
+| ------------- |
+| South America |
+
+| name                             |
+| -------------------------------- |
+| Argentina                        |
+| Bolivia                          |
+| Brazil                           |
+| Chile                            |
+| Colombia                         |
+| Ecuador                          |
+| Guyana                           |
+| Paraguay                         |
+| Peru                             |
+| Saint Vincent and the Grenadines |
+| Suriname                         |
+| Uruguay                          |
+| Venezuela                        |
+
+```sql
+-- List each country and its continent in the same continent as 'Brazil' or 'Mexico'.
+SELECT continent
+FROM world
+WHERE name='Brazil' OR name='Mexico'
+
+SELECT name, continent
+FROM world
+WHERE continent IN (SELECT continent FROM world WHERE name='Brazil' OR name='Mexico')
+```
+
+| continent     |
+| ------------- |
+| South America |
+| North America |
+
+| name                             | continent     |
+| -------------------------------- | ------------- |
+| Argentina                        | South America |
+| Bolivia                          | South America |
+| Brazil                           | South America |
+| Chile                            | South America |
+| Colombia                         | South America |
+| Ecuador                          | South America |
+| Guyana                           | South America |
+| Paraguay                         | South America |
+| Peru                             | South America |
+| Saint Vincent and the Grenadines | South America |
+| Suriname                         | South America |
+| Uruguay                          | South America |
+| Venezuela                        | South America |
+| Belize                           | North America |
+| Canada                           | North America |
+| Costa Rica                       | North America |
+| El Salvador                      | North America |
+| Guatemala                        | North America |
+| Honduras                         | North America |
+| Mexico                           | North America |
+| Nicaragua                        | North America |
+| Panama                           | North America |
+| Saint Kitts and Nevis            | North America |
+| United States                    | North America |
+
+```sql
+-- Show the population of China as a multiple of the population of the United Kingdom
+SELECT population
+FROM world
+WHERE name='United Kingdom'
+
+SELECT population/(SELECT population FROM world WHERE name='United Kingdom') 
+AS 'population of China/population of United Kingdom'
+FROM world
+WHERE name = 'China'
+```
+
+| population |
+| ---------- |
+| 66435550   |
+
+| population of China/population of United Kingdom |
+| ------------------------------------------------ |
+| 21.1089                                          |
+
+```sql
+-- Show each country that has a population greater than the population of ALL countries in Europe.
+SELECT population
+FROM world
+WHERE continent='Europe'
+
+SELECT name
+FROM world
+WHERE population > ALL (SELECT population FROM world WHERE continent='Europe')
+```
+
+| name          |
+| ------------- |
+| Bangladesh    |
+| Brazil        |
+| China         |
+| Egypt         |
+| Ethiopia      |
+| India         |
+| Indonesia     |
+| Iran          |
+| Japan         |
+| Mexico        |
+| Nigeria       |
+| Pakistan      |
+| Philippines   |
+| Russia        |
+| Turkey        |
+| United States |
+| Vietnam       |
 
 **[⬆ back to top](#table-of-contents)**
 
