@@ -22,6 +22,14 @@
     - [Find the continents where all countries have a population <= 25000000.](#find-the-continents-where-all-countries-have-a-population--25000000)
     - [Some countries have populations more than three times that of any of their neighbours (in the same continent)](#some-countries-have-populations-more-than-three-times-that-of-any-of-their-neighbours-in-the-same-continent)
   - [**SUM and COUNT**](#sum-and-count)
+    - [Total world population](#total-world-population)
+    - [List of continents](#list-of-continents)
+    - [GDP of Africa](#gdp-of-africa)
+    - [Count the big countries](#count-the-big-countries)
+    - [Baltic states population](#baltic-states-population)
+    - [Counting the countries of each continent](#counting-the-countries-of-each-continent)
+    - [Counting big countries in each continent](#counting-big-countries-in-each-continent)
+    - [Counting big continents](#counting-big-continents)
   - [**JOIN**](#join)
     - [Basic SQL Join Types](#basic-sql-join-types)
   - [**More JOIN**](#more-join)
@@ -33,14 +41,20 @@
 - [SQL Zoo](https://sqlzoo.net/wiki/SELECT_basics)
 - [SQL PD](https://sqlpd.com)
 
-| Table                          | Keywords | Filters & Values                                                           |
-| ------------------------------ | -------- | -------------------------------------------------------------------------- |
-| SELECT (columns and processed) | DISTINCT | Binary Numeric and string comparison operator: =, <, <=, >, >=, !=, <>, () |
-| FROM (table)                   | LIMIT    | Add ALL or ANY when right side of the operator have multiple values        |
-| WHERE (filter rows)            | ASC      | List one value: = value                                                    |
-| GROUP BY                       | DESC     | List many values: IN (value1, value2, ...)                                 |
-| HAVING                         |          | Inclusive ranges: BETWEEN min AND max                                      |
-| ORDER BY (sort rows)           |          | Logical Operators: NOT, AND, OR, XOR                                       |
+| Table                           | Keywords | Filters & Values                                                           |
+| ------------------------------- | -------- | -------------------------------------------------------------------------- |
+| SELECT (columns and processed)  | DISTINCT | Binary Numeric and string comparison operator: =, <, <=, >, >=, !=, <>, () |
+| FROM (table)                    | LIMIT    | Add ALL or ANY when right side of the operator have multiple values        |
+| WHERE (filter rows, then group) | ASC      | List one value: = value                                                    |
+| GROUP BY                        | DESC     | List many values: IN (value1, value2, ...)                                 |
+| HAVING (filter groups)          |          | Inclusive ranges: BETWEEN min AND max                                      |
+| ORDER BY (sort rows)            |          | Logical Operators: NOT, AND, OR, XOR                                       |
+
+- The WHERE clause is applied before the GROUP BY clause.
+- The WHERE clause applies the condition to individual rows before the rows are summarized into groups by the GROUP BY clause.
+
+- The HAVING clause is applied after the GROUP BY clause.
+- The HAVING clause applies the condition to the groups after the rows are grouped into groups.
 
 ## **SELECT basics**
 
@@ -1220,6 +1234,162 @@ WHERE
 **[⬆ back to top](#table-of-contents)**
 
 ## **SUM and COUNT**
+
+world Table
+
+| name        | continent | area    | population | gdp          |
+| ----------- | --------- | ------- | ---------- | ------------ |
+| Afghanistan | Asia      | 652230  | 25500100   | 20343000000  |
+| Albania     | Europe    | 28748   | 2831741    | 12960000000  |
+| Algeria     | Africa    | 2381741 | 37100000   | 188681000000 |
+| Andorra     | Europe    | 468     | 78115      | 3712000000   |
+| Angola      | Africa    | 1246700 | 20609294   | 100990000000 |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Total world population
+
+```sql
+-- Show the total population of the world.
+SELECT SUM(population) AS 'total population'
+FROM world
+```
+
+| total population |
+| ---------------- |
+| 7615648652       |
+
+**[⬆ back to top](#table-of-contents)**
+
+### List of continents
+
+```sql
+-- List all the continents - just once each.
+SELECT DISTINCT(continent)
+FROM world
+```
+
+| continent     |
+| ------------- |
+| Africa        |
+| Asia          |
+| Caribbean     |
+| Eurasia       |
+| Europe        |
+| North America |
+| Oceania       |
+| South America |
+
+**[⬆ back to top](#table-of-contents)**
+
+### GDP of Africa
+
+```sql
+-- Give the total GDP of Africa
+SELECT SUM(gdp) AS 'total GDP of Africa'
+FROM world 
+WHERE continent = 'Africa'
+```
+
+| total GDP of Africa |
+| ------------------- |
+| 1964824000000       |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Count the big countries
+
+```sql
+-- How many countries have an area of at least 1000000
+SELECT COUNT(area)
+FROM world 
+WHERE area >= 1000000
+```
+
+| COUNT(area) |
+| ----------- |
+| 29          |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Baltic states population
+
+```sql
+-- What is the total population of ('Estonia', 'Latvia', 'Lithuania')
+SELECT SUM(population) AS 'total population'
+FROM world 
+WHERE name IN ('Estonia', 'Latvia', 'Lithuania')
+```
+
+| total population |
+| ---------------- |
+| 6028631          |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Counting the countries of each continent
+
+```sql
+-- For each continent show the continent and number of countries.
+SELECT continent, COUNT(name) AS number
+FROM world 
+GROUP BY continent
+```
+
+| continent     | number |
+| ------------- | ------ |
+| Africa        | 53     |
+| Asia          | 47     |
+| Caribbean     | 11     |
+| Eurasia       | 2      |
+| Europe        | 44     |
+| North America | 11     |
+| Oceania       | 14     |
+| South America | 13     |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Counting big countries in each continent
+
+```sql
+-- For each continent show the continent and number of countries with populations of at least 10 million.
+SELECT continent, count(name)
+FROM world 
+WHERE population >= 10000000
+GROUP BY continent
+```
+
+| continent     | number |
+| ------------- | ------ |
+| Africa        | 31     |
+| Asia          | 26     |
+| Caribbean     | 3      |
+| Eurasia       | 1      |
+| Europe        | 15     |
+| North America | 4      |
+| Oceania       | 1      |
+| South America | 8      |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Counting big continents
+
+```sql
+-- List the continents that have a total population of at least 100 million.
+SELECT continent
+FROM world
+GROUP BY continent
+HAVING SUM(population) > 100000000
+```
+
+| continent     |
+| ------------- |
+| Africa        |
+| Asia          |
+| Eurasia       |
+| Europe        |
+| North America |
+| South America |
 
 **[⬆ back to top](#table-of-contents)**
 
