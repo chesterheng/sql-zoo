@@ -11,6 +11,16 @@
   - [**SELECT from nobel**](#select-from-nobel)
   - [**Using nested SELECT**](#using-nested-select)
   - [**SELECT in SELECT**](#select-in-select)
+    - [List each country name where the population is larger than that of 'Russia'.](#list-each-country-name-where-the-population-is-larger-than-that-of-russia)
+    - [Show the countries in Europe with a per capita GDP greater than 'United Kingdom'.](#show-the-countries-in-europe-with-a-per-capita-gdp-greater-than-united-kingdom)
+    - [List the name and continent of countries in the continents containing either Argentina or Australia.](#list-the-name-and-continent-of-countries-in-the-continents-containing-either-argentina-or-australia)
+    - [Which country has a population that is more than Canada but less than Poland?](#which-country-has-a-population-that-is-more-than-canada-but-less-than-poland)
+    - [Show the name and the population as a percentage of the population of Germany for each country in Europe](#show-the-name-and-the-population-as-a-percentage-of-the-population-of-germany-for-each-country-in-europe)
+    - [Which countries have a GDP greater than every country in Europe?](#which-countries-have-a-gdp-greater-than-every-country-in-europe)
+    - [Find the largest country (by area) in each continent](#find-the-largest-country-by-area-in-each-continent)
+    - [List each continent and the name of the country that comes first alphabetically.](#list-each-continent-and-the-name-of-the-country-that-comes-first-alphabetically)
+    - [Find the continents where all countries have a population <= 25000000.](#find-the-continents-where-all-countries-have-a-population--25000000)
+    - [Some countries have populations more than three times that of any of their neighbours (in the same continent)](#some-countries-have-populations-more-than-three-times-that-of-any-of-their-neighbours-in-the-same-continent)
   - [**SUM and COUNT**](#sum-and-count)
   - [**JOIN**](#join)
     - [Basic SQL Join Types](#basic-sql-join-types)
@@ -766,6 +776,8 @@ ORDER BY subject IN ('Physics','Chemistry'), subject, winner
 
 ## **Using nested SELECT**
 
+world Table
+
 | name        | continent | area    | population | gdp          |
 | ----------- | --------- | ------- | ---------- | ------------ |
 | Afghanistan | Asia      | 652230  | 25500100   | 20343000000  |
@@ -902,6 +914,308 @@ WHERE population > ALL (SELECT population FROM world WHERE continent='Europe')
 **[⬆ back to top](#table-of-contents)**
 
 ## **SELECT in SELECT**
+
+world Table
+
+| name        | continent | area    | population | gdp          |
+| ----------- | --------- | ------- | ---------- | ------------ |
+| Afghanistan | Asia      | 652230  | 25500100   | 20343000000  |
+| Albania     | Europe    | 28748   | 2831741    | 12960000000  |
+| Algeria     | Africa    | 2381741 | 37100000   | 188681000000 |
+| Andorra     | Europe    | 468     | 78115      | 3712000000   |
+| Angola      | Africa    | 1246700 | 20609294   | 100990000000 |
+
+**[⬆ back to top](#table-of-contents)**
+
+### List each country name where the population is larger than that of 'Russia'.
+
+```sql
+-- List each country name where the population is larger than that of 'Russia'.
+SELECT name 
+FROM world
+WHERE population > (SELECT population FROM world WHERE name='Russia')
+```
+
+| name          |
+| ------------- |
+| Bangladesh    |
+| Brazil        |
+| China         |
+| India         |
+| Indonesia     |
+| Nigeria       |
+| Pakistan      |
+| United States |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Show the countries in Europe with a per capita GDP greater than 'United Kingdom'.
+
+```sql
+-- Show the countries in Europe with a per capita GDP greater than 'United Kingdom'.
+SELECT name 
+FROM world
+WHERE 
+  continent = 'Europe' AND 
+  gdp/population > (SELECT gdp/population FROM world WHERE name='United Kingdom') 
+```
+
+| name          |
+| ------------- |
+| Andorra       |
+| Austria       |
+| Belgium       |
+| Denmark       |
+| Finland       |
+| Germany       |
+| Iceland       |
+| Ireland       |
+| Liechtenstein |
+| Luxembourg    |
+| Monaco        |
+| Netherlands   |
+| Norway        |
+| San Marino    |
+| Sweden        |
+| Switzerland   |
+
+**[⬆ back to top](#table-of-contents)**
+
+### List the name and continent of countries in the continents containing either Argentina or Australia.
+
+```sql
+-- List the name and continent of countries in the continents containing either Argentina or Australia. Order by name of the country.
+SELECT name, continent 
+FROM world 
+WHERE 
+  continent = (SELECT continent FROM world WHERE name = 'Argentina') OR 
+  continent = (SELECT continent FROM world WHERE name = 'Australia') 
+ORDER by name
+```
+
+| name                             | continent     |
+| -------------------------------- | ------------- |
+| Argentina                        | South America |
+| Australia                        | Oceania       |
+| Bolivia                          | South America |
+| Brazil                           | South America |
+| Chile                            | South America |
+| Colombia                         | South America |
+| Ecuador                          | South America |
+| Fiji                             | Oceania       |
+| Guyana                           | South America |
+| Kiribati                         | Oceania       |
+| Marshall Islands                 | Oceania       |
+| Micronesia, Federated States of  | Oceania       |
+| Nauru                            | Oceania       |
+| New Zealand                      | Oceania       |
+| Palau                            | Oceania       |
+| Papua New Guinea                 | Oceania       |
+| Paraguay                         | South America |
+| Peru                             | South America |
+| Saint Vincent and the Grenadines | South America |
+| Samoa                            | Oceania       |
+| Solomon Islands                  | Oceania       |
+| Suriname                         | South America |
+| Tonga                            | Oceania       |
+| Tuvalu                           | Oceania       |
+| Uruguay                          | South America |
+| Vanuatu                          | Oceania       |
+| Venezuela                        | South America |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Which country has a population that is more than Canada but less than Poland? 
+
+```sql
+-- Which country has a population that is more than Canada but less than Poland? 
+-- Show the name and the population.
+SELECT name, population 
+FROM world 
+WHERE 
+  population > (SELECT population FROM world WHERE name = 'Canada') AND 
+  population < (SELECT population FROM world WHERE name = 'Poland')
+```
+
+| name | population |
+| ---- | ---------- |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Show the name and the population as a percentage of the population of Germany for each country in Europe
+
+```sql
+-- Show the name and the population of each country in Europe. 
+-- Show the population as a percentage of the population of Germany.
+SELECT 
+  name, 
+  CONCAT(ROUND(population/(SELECT population FROM world WHERE name = 'Germany')*100,0), '%') AS percentage
+FROM world 
+WHERE continent = 'Europe' 
+```
+
+| name                   | percentage |
+| ---------------------- | ---------- |
+| Albania                | 3%         |
+| Andorra                | 0%         |
+| Austria                | 11%        |
+| Belarus                | 11%        |
+| Belgium                | 14%        |
+| Bosnia and Herzegovina | 4%         |
+| Bulgaria               | 8%         |
+| Croatia                | 5%         |
+| Czech Republic         | 13%        |
+| Denmark                | 7%         |
+| Estonia                | 2%         |
+| Finland                | 7%         |
+| France                 | 81%        |
+| Germany                | 100%       |
+| Greece                 | 13%        |
+| Hungary                | 12%        |
+| Iceland                | 0%         |
+| Ireland                | 6%         |
+| Italy                  | 72%        |
+| Kazakhstan             | 22%        |
+| Latvia                 | 2%         |
+| Liechtenstein          | 0%         |
+| Lithuania              | 3%         |
+| Luxembourg             | 1%         |
+| Malta                  | 1%         |
+| Moldova                | 3%         |
+| Monaco                 | 0%         |
+| Montenegro             | 1%         |
+| Netherlands            | 21%        |
+| North Macedonia        | 2%         |
+| Norway                 | 6%         |
+| Poland                 | 46%        |
+| Portugal               | 12%        |
+| Romania                | 23%        |
+| San Marino             | 0%         |
+| Serbia                 | 8%         |
+| Slovakia               | 7%         |
+| Slovenia               | 3%         |
+| Spain                  | 57%        |
+| Sweden                 | 12%        |
+| Switzerland            | 10%        |
+| Ukraine                | 50%        |
+| United Kingdom         | 80%        |
+| Vatican City           | 0%         |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Which countries have a GDP greater than every country in Europe?
+
+```sql
+-- Which countries have a GDP greater than every country in Europe?
+SELECT name
+FROM world
+WHERE 
+  gdp >= ALL(SELECT gdp FROM world WHERE continent = 'Europe' AND gdp > 0) AND 
+  continent != 'Europe'
+```
+
+| name          |
+| ------------- |
+| China         |
+| Japan         |
+| United States |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Find the largest country (by area) in each continent
+
+```sql
+-- Find the largest country (by area) in each continent
+-- Show the continent, the name and the area.
+SELECT continent, name, area 
+FROM world x 
+WHERE area >= ALL (SELECT area FROM world y WHERE y.continent=x.continent)
+```
+
+| continent     | name       | area     |
+| ------------- | ---------- | -------- |
+| Africa        | Algeria    | 2381741  |
+| Oceania       | Australia  | 7692024  |
+| South America | Brazil     | 8515767  |
+| North America | Canada     | 9984670  |
+| Asia          | China      | 9596961  |
+| Caribbean     | Cuba       | 109884   |
+| Europe        | Kazakhstan | 2724900  |
+| Eurasia       | Russia     | 17125242 |
+
+**[⬆ back to top](#table-of-contents)**
+
+### List each continent and the name of the country that comes first alphabetically.
+
+```sql
+-- List each continent and the name of the country that comes first alphabetically.
+SELECT continent, name
+FROM world x
+WHERE name <= ALL(SELECT name FROM world y WHERE y.continent = x.continent)
+```
+
+| continent     | name                |
+| ------------- | ------------------- |
+| Africa        | Algeria             |
+| Asia          | Afghanistan         |
+| Caribbean     | Antigua and Barbuda |
+| Eurasia       | Armenia             |
+| Europe        | Albania             |
+| North America | Belize              |
+| Oceania       | Australia           |
+| South America | Argentina           |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Find the continents where all countries have a population <= 25000000. 
+
+```sql
+-- Find the continents where all countries have a population <= 25000000. 
+-- Then find the names of the countries associated with these continents. 
+-- Show name, continent and population.
+SELECT name, continent, population
+FROM world x
+WHERE 
+  25000000 > ALL(SELECT population FROM world y WHERE x.continent = y.continent)
+```
+
+| name                | continent | population |
+| ------------------- | --------- | ---------- |
+| Antigua and Barbuda | Caribbean | 96453      |
+| Bahamas             | Caribbean | 385340     |
+| Barbados            | Caribbean | 287025     |
+| Cuba                | Caribbean | 11209628   |
+| Dominica            | Caribbean | 71808      |
+| Dominican Republic  | Caribbean | 10358320   |
+| Grenada             | Caribbean | 112003     |
+| Haiti               | Caribbean | 11577779   |
+| Jamaica             | Caribbean | 2726667    |
+| Saint Lucia         | Caribbean | 178696     |
+| Trinidad and Tobago | Caribbean | 1363985    |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Some countries have populations more than three times that of any of their neighbours (in the same continent)
+
+```sql
+-- Some countries have populations more than three times that of any of their neighbours (in the same continent).
+SELECT name, continent
+FROM world x
+WHERE 
+  population > ALL(
+    SELECT population*3 
+    FROM world y 
+    WHERE 
+      x.continent = y.continent AND 
+      y.population > 0 AND 
+      y.name != x.name
+    )
+```
+
+| name   | continent     |
+| ------ | ------------- |
+| Brazil | South America |
+| Russia | Eurasia       |
 
 **[⬆ back to top](#table-of-contents)**
 
