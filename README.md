@@ -79,6 +79,16 @@
     - [Use CASE to show the name of each teacher followed by 'Sci' if the teacher is in dept 1 or 2 and 'Art' otherwise.](#use-case-to-show-the-name-of-each-teacher-followed-by-sci-if-the-teacher-is-in-dept-1-or-2-and-art-otherwise)
     - [Use CASE to show the name of each teacher followed by 'Sci' if the teacher is in dept 1 or 2, show 'Art' if the teacher's dept is 3 and 'None' otherwise.](#use-case-to-show-the-name-of-each-teacher-followed-by-sci-if-the-teacher-is-in-dept-1-or-2-show-art-if-the-teachers-dept-is-3-and-none-otherwise)
   - [**Self JOIN**](#self-join)
+    - [How many stops are in the database.](#how-many-stops-are-in-the-database)
+    - [Find the id value for the stop 'Craiglockhart'](#find-the-id-value-for-the-stop-craiglockhart)
+    - [Give the id and the name for the stops on the '4' 'LRT' service.](#give-the-id-and-the-name-for-the-stops-on-the-4-lrt-service)
+    - [Show the number of routes that visit either London Road (149) or Craiglockhart (53).](#show-the-number-of-routes-that-visit-either-london-road-149-or-craiglockhart-53)
+    - [Shows the services from Craiglockhart (53) to London Road (149).](#shows-the-services-from-craiglockhart-53-to-london-road-149)
+    - [Shows the services between 'Craiglockhart' and 'London Road'](#shows-the-services-between-craiglockhart-and-london-road)
+    - [Give a list of all the services which connect stops 115 and 137 ('Haymarket' and 'Leith')](#give-a-list-of-all-the-services-which-connect-stops-115-and-137-haymarket-and-leith)
+    - [Give a list of the services which connect the stops 'Craiglockhart' and 'Tollcross'](#give-a-list-of-the-services-which-connect-the-stops-craiglockhart-and-tollcross)
+    - [Give a distinct list of the stops which may be reached from 'Craiglockhart' by taking one bus.](#give-a-distinct-list-of-the-stops-which-may-be-reached-from-craiglockhart-by-taking-one-bus)
+    - [Find the routes involving two buses that can go from Craiglockhart to Lochend.](#find-the-routes-involving-two-buses-that-can-go-from-craiglockhart-to-lochend)
 
 ## **SQL Guide**
 
@@ -2482,5 +2492,202 @@ FROM teacher
 **[⬆ back to top](#table-of-contents)**
 
 ## **Self JOIN**
+
+- stops(id, name)
+- route(num, company, pos, stop)
+
+**[⬆ back to top](#table-of-contents)**
+
+### How many stops are in the database.
+
+```sql
+SELECT COUNT(id)
+FROM stops
+```
+
+| COUNT(id) |
+| --------- |
+| 246       |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Find the id value for the stop 'Craiglockhart'
+
+```sql
+SELECT id
+FROM stops
+WHERE name = 'Craiglockhart'
+```
+
+| id  |
+| --- |
+| 53  |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Give the id and the name for the stops on the '4' 'LRT' service.
+
+```sql
+SELECT id, name
+FROM stops
+JOIN route 
+ON stops.id = route.stop
+WHERE 
+  num = '4' AND 
+  company = 'LRT'
+```
+
+| id  | name           |
+| --- | -------------- |
+| 19  | Bingham        |
+| 177 | Northfield     |
+| 149 | London Road    |
+| 194 | Princes Street |
+| 115 | Haymarket      |
+| 53  | Craiglockhart  |
+| 179 | Oxgangs        |
+| 85  | Fairmilehead   |
+| 117 | Hillend        |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Show the number of routes that visit either London Road (149) or Craiglockhart (53).
+
+```sql
+SELECT company, num, COUNT(*)
+FROM route
+WHERE stop = 149 OR stop = 53
+GROUP BY num
+HAVING COUNT(*) = 2
+```
+
+| company | num | COUNT(*) |
+| ------- | --- | -------- |
+| LRT     | 4   | 2        |
+| LRT     | 45  | 2        |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Shows the services from Craiglockhart (53) to London Road (149).
+
+```sql
+SELECT a.company, a.num, a.stop, b.stop
+FROM route a
+JOIN route b 
+ON a.num = b.num
+WHERE 
+  a.stop = 53 AND 
+  b.stop = 149
+```
+
+| company | num | stop | stop |
+| ------- | --- | ---- | ---- |
+| LRT     | 4   | 53   | 149  |
+| LRT     | 45  | 53   | 149  |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Shows the services between 'Craiglockhart' and 'London Road'
+
+```sql
+SELECT a.company, a.num, stopa.name, stopb.name
+FROM route a
+JOIN route b ON a.num = b.num
+JOIN stops stopa ON a.stop = stopa.id
+JOIN stops stopb ON b.stop = stopb.id
+WHERE 
+  stopa.name = 'Craiglockhart' AND
+  stopb.name = 'London Road'
+```
+
+| company | num | name          | name        |
+| ------- | --- | ------------- | ----------- |
+| LRT     | 4   | Craiglockhart | London Road |
+| LRT     | 45  | Craiglockhart | London Road |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Give a list of all the services which connect stops 115 and 137 ('Haymarket' and 'Leith')
+
+```sql
+SELECT DISTINCT a.company, a.num
+FROM route a
+JOIN route b ON a.num = b.num
+WHERE 
+  a.stop = 115 AND
+  b.stop = 137
+```
+
+| company | num |
+| ------- | --- |
+| LRT     | 12  |
+| LRT     | 2   |
+| LRT     | 22  |
+| LRT     | 25  |
+| LRT     | 2A  |
+| SMT     | C5  |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Give a list of the services which connect the stops 'Craiglockhart' and 'Tollcross'
+
+```sql
+SELECT a.company, a.num
+FROM route a
+JOIN route b ON (a.num = b.num)
+JOIN stops stopa ON (a.stop = stopa.id)
+JOIN stops stopb ON (b.stop = stopb.id)
+WHERE 
+  stopa.name = 'Craiglockhart' AND 
+  stopb.name = 'Tollcross'
+```
+
+| company | num |
+| ------- | --- |
+| LRT     | 10  |
+| LRT     | 27  |
+| LRT     | 45  |
+| LRT     | 47  |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Give a distinct list of the stops which may be reached from 'Craiglockhart' by taking one bus.
+
+```sql
+-- Include 'Craiglockhart' itself, offered by the LRT company.
+-- Include the company and bus no. of the relevant services.
+SELECT DISTINCT stopb.name, b.company, b.num
+FROM route a
+JOIN route b ON (a.num = b.num AND a.company = b.company)
+JOIN stops stopa ON (a.stop = stopa.id)
+JOIN stops stopb ON (b.stop = stopb.id)
+WHERE stopa.name = 'Craiglockhart'
+```
+
+| name         | company | num |
+| ------------ | ------- | --- |
+| Silverknowes | LRT     | 10  |
+| Muirhouse    | LRT     | 10  |
+| Newhaven     | LRT     | 10  |
+| Leith        | LRT     | 10  |
+| ...          | ...     | ... |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Find the routes involving two buses that can go from Craiglockhart to Lochend.
+
+```sql
+-- Show the bus no. and company for the first bus, the name of the stop for the transfer, and the bus no. and company for the second bus.
+SELECT a.num, a.company, stops.name, c.num, c.company
+FROM route a 
+JOIN route b ON a.num = b.num AND a.company = b.company
+JOIN stops ON stops.id = a.stop
+JOIN route c ON stops.id = c.stop
+JOIN route d ON c.num = d.num AND c.company = d.company
+WHERE 
+  b.stop = (SELECT id FROM stops WHERE name = 'Craiglockhart') AND 
+  d.stop =(SELECT id FROM stops WHERE name = 'Lochend')
+Order BY a.num, a.company, stops.name, c.num
+```
 
 **[⬆ back to top](#table-of-contents)**
