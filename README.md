@@ -6,6 +6,9 @@
   - [Table of Contents](#table-of-contents)
   - [**SQL Guide**](#sql-guide)
   - [**SELECT basics**](#select-basics)
+    - [show the population of Germany](#show-the-population-of-germany)
+    - [Show the name and the population for 'Sweden', 'Norway' and 'Denmark'](#show-the-name-and-the-population-for-sweden-norway-and-denmark)
+    - [show the country and the area for countries with an area between 200,000 and 250,000](#show-the-country-and-the-area-for-countries-with-an-area-between-200000-and-250000)
   - [**SELECT Quiz**](#select-quiz)
   - [**SELECT from world**](#select-from-world)
   - [**SELECT from nobel**](#select-from-nobel)
@@ -92,6 +95,7 @@
 
 ## **SQL Guide**
 
+- [SQL Tutorial](https://www.sqltutorial.org/)
 - [SQL Zoo](https://sqlzoo.net/wiki/SELECT_basics)
 - [SQL PD](https://sqlpd.com)
 
@@ -124,9 +128,11 @@ world Table
 | Andorra     | Europe    | 468     | 78115      | 3712000000   |
 | Angola      | Africa    | 1246700 | 20609294   | 100990000000 |
 
+**[⬆ back to top](#table-of-contents)**
+
+### show the population of Germany
 
 ```sql
--- show the population of Germany
 SELECT population 
 FROM world 
 WHERE name = 'Germany'
@@ -136,8 +142,11 @@ WHERE name = 'Germany'
 | ---------- |
 | 83149300   |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Show the name and the population for 'Sweden', 'Norway' and 'Denmark'
+
 ```sql
--- Show the name and the population for 'Sweden', 'Norway' and 'Denmark'
 SELECT name, population 
 FROM world
 WHERE name IN ('Sweden', 'Norway', 'Denmark');
@@ -149,8 +158,11 @@ WHERE name IN ('Sweden', 'Norway', 'Denmark');
 | Norway  | 5367580    |
 | Sweden  | 10338368   |
 
+**[⬆ back to top](#table-of-contents)**
+
+### show the country and the area for countries with an area between 200,000 and 250,000
+
 ```sql
--- show the country and the area for countries with an area between 200,000 and 250,000
 SELECT name, area 
 FROM world
 WHERE area BETWEEN 200000 AND 250000
