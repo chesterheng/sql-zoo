@@ -67,6 +67,17 @@
     - [List the films released in the year 1978](#list-the-films-released-in-the-year-1978)
     - [List all the people who have worked with 'Art Garfunkel'.](#list-all-the-people-who-have-worked-with-art-garfunkel)
   - [**Using NULL**](#using-null)
+    - [List the teachers who have NULL for their department.](#list-the-teachers-who-have-null-for-their-department)
+    - [INNER JOIN misses the teachers with no department and the departments with no teacher.](#inner-join-misses-the-teachers-with-no-department-and-the-departments-with-no-teacher)
+    - [Use a different JOIN so that all teachers are listed.](#use-a-different-join-so-that-all-teachers-are-listed)
+    - [Use a different JOIN so that all departments are listed.](#use-a-different-join-so-that-all-departments-are-listed)
+    - [Using the COALESCE function to print the mobile number](#using-the-coalesce-function-to-print-the-mobile-number)
+    - [Using the COALESCE function to print department name](#using-the-coalesce-function-to-print-department-name)
+    - [Use COUNT to show the number of teachers and the number of mobile phones.](#use-count-to-show-the-number-of-teachers-and-the-number-of-mobile-phones)
+    - [Use COUNT and GROUP BY dept.name to show each department and the number of staff.](#use-count-and-group-by-deptname-to-show-each-department-and-the-number-of-staff)
+    - [Use COUNT and GROUP BY dept.name to show each department and the number of staff.](#use-count-and-group-by-deptname-to-show-each-department-and-the-number-of-staff-1)
+    - [Use CASE to show the name of each teacher followed by 'Sci' if the teacher is in dept 1 or 2 and 'Art' otherwise.](#use-case-to-show-the-name-of-each-teacher-followed-by-sci-if-the-teacher-is-in-dept-1-or-2-and-art-otherwise)
+    - [Use CASE to show the name of each teacher followed by 'Sci' if the teacher is in dept 1 or 2, show 'Art' if the teacher's dept is 3 and 'None' otherwise.](#use-case-to-show-the-name-of-each-teacher-followed-by-sci-if-the-teacher-is-in-dept-1-or-2-show-art-if-the-teachers-dept-is-3-and-none-otherwise)
   - [**Self JOIN**](#self-join)
 
 ## **SQL Guide**
@@ -78,7 +89,7 @@
 | ----------------------------------- | -------- | -------------------------------------------------------------------------- |
 | SELECT column1, AGGREGATE (column2) | DISTINCT | Binary Numeric and string comparison operator: =, <, <=, >, >=, !=, <>, () |
 | FROM [table A]                      | LIMIT    | Add ALL or ANY when right side of the operator have multiple values        |
-| JOIN [table B]                      | ASC      | List one value: = value                                                    |
+| JOIN [table B]                      | ASC      | List one value: = value or IS NULL                                         |
 | ON A.column=B.column                | DESC     | List many values: IN (value1, value2, ...)                                 |
 | WHERE [filter rows, then group]     |          | Inclusive ranges: BETWEEN min AND max                                      |
 | GROUP BY                            |          | Logical Operators: NOT, AND, OR, XOR                                       |
@@ -2233,6 +2244,240 @@ WHERE
 **[⬆ back to top](#table-of-contents)**
 
 ## **Using NULL**
+
+teacher Table
+
+| id  | dept | name       | phone | mobile         |
+| --- | ---- | ---------- | ----- | -------------- |
+| 101 | 1    | Shrivell   | 2753  | 07986 555 1234 |
+| 102 | 1    | Throd      | 2754  | 07122 555 1920 |
+| 103 | 1    | Splint     | 2293  |                |
+| 104 |      | Spiregrain | 3287  |                |
+| 105 | 2    | Cutflower  | 3212  | 07996 555 6574 |
+| 106 |      | Deadyawn   | 3345  |                |
+
+dept Table
+
+| id  | name        |
+| --- | ----------- |
+| 1   | Computing   |
+| 2   | Design      |
+| 3   | Engineering |
+
+**[⬆ back to top](#table-of-contents)**
+
+### List the teachers who have NULL for their department.
+
+```sql
+SELECT name
+FROM teacher
+WHERE dept IS NULL;
+```
+
+| name       |
+| ---------- |
+| Spiregrain |
+| Deadyawn   |
+
+**[⬆ back to top](#table-of-contents)**
+
+### INNER JOIN misses the teachers with no department and the departments with no teacher.
+
+```sql
+SELECT
+  teacher.name AS teacher, 
+  dept.name AS dept
+FROM teacher
+INNER JOIN dept
+ON teacher.dept = dept.id
+```
+
+| teacher   | dept      |
+| --------- | --------- |
+| Shrivell  | Computing |
+| Throd     | Computing |
+| Splint    | Computing |
+| Cutflower | Design    |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Use a different JOIN so that all teachers are listed.
+
+```sql
+SELECT teacher.name, dept.name
+FROM teacher
+LEFT JOIN dept
+ON teacher.dept = dept.id
+```
+
+| name       | name      |
+| ---------- | --------- |
+| Shrivell   | Computing |
+| Throd      | Computing |
+| Splint     | Computing |
+| Spiregrain | null      |
+| Cutflower  | Design    |
+| Deadyawn   | null      |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Use a different JOIN so that all departments are listed.
+
+```sql
+SELECT teacher.name, dept.name
+FROM teacher
+RIGHT JOIN dept
+ON teacher.dept = dept.id
+```
+
+| name      | name        |
+| --------- | ----------- |
+| Shrivell  | Computing   |
+| Throd     | Computing   |
+| Splint    | Computing   |
+| Cutflower | Design      |
+| null      | Engineering |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Using the COALESCE function to print the mobile number
+
+```sql
+-- Use COALESCE to print the mobile number. Use the number '07986 444 2266' if there is no number given. 
+-- Show teacher name and mobile number or '07986 444 2266'
+SELECT name, COALESCE(mobile, '07986 444 2266') AS 'mobile number'
+FROM teacher;
+```
+
+| name       | COALESCE(mobi.. |
+| ---------- | --------------- |
+| Shrivell   | 07986 555 1234  |
+| Throd      | 07122 555 1920  |
+| Splint     | 07986 444 2266  |
+| Spiregrain | 07986 444 2266  |
+| Cutflower  | 07996 555 6574  |
+| Deadyawn   | 07986 444 2266  |
+
+
+**[⬆ back to top](#table-of-contents)**
+
+### Using the COALESCE function to print department name
+
+```sql
+-- Use the COALESCE function and a LEFT JOIN to print the teacher name and department name. 
+-- Use the string 'None' where there is no department.
+SELECT teacher.name, COALESCE(dept.name, 'None') 
+FROM teacher
+LEFT JOIN dept 
+ON dept = dept.id
+```
+
+| name       | COALESCE(dept.. |
+| ---------- | --------------- |
+| Shrivell   | Computing       |
+| Throd      | Computing       |
+| Splint     | Computing       |
+| Spiregrain | None            |
+| Cutflower  | Design          |
+| Deadyawn   | None            |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Use COUNT to show the number of teachers and the number of mobile phones.
+
+```sql
+SELECT count(id), count(mobile)
+FROM teacher
+```
+
+| count(id) | count(mobile) |
+| --------- | ------------- |
+| 6         | 3             |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Use COUNT and GROUP BY dept.name to show each department and the number of staff. 
+
+```sql
+-- Use a RIGHT JOIN to ensure that the Engineering department is listed.
+SELECT dept.name, COUNT(teacher.name) 
+FROM teacher
+RIGHT JOIN dept
+ON dept = dept.id
+GROUP BY dept.name
+```
+
+| name        | COUNT(teacher.. |
+| ----------- | --------------- |
+| Computing   | 3               |
+| Design      | 1               |
+| Engineering | 0               |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Use COUNT and GROUP BY dept.name to show each department and the number of staff. 
+
+```sql
+-- Use a RIGHT JOIN to ensure that the Engineering department is listed.
+SELECT dept.name, COUNT(teacher.name) 
+FROM teacher
+RIGHT JOIN dept
+ON dept = dept.id
+GROUP BY dept.name
+```
+
+| name        | COUNT(teacher.. |
+| ----------- | --------------- |
+| Computing   | 3               |
+| Design      | 1               |
+| Engineering | 0               |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Use CASE to show the name of each teacher followed by 'Sci' if the teacher is in dept 1 or 2 and 'Art' otherwise. 
+
+```sql
+SELECT 
+  teacher.name, 
+  CASE 
+    WHEN dept = 1 OR dept = 2 THEN 'Sci' 
+    ELSE 'Art' 
+  END dept
+FROM teacher
+```
+
+| name       | dept |
+| ---------- | ---- |
+| Shrivell   | Sci  |
+| Throd      | Sci  |
+| Splint     | Sci  |
+| Spiregrain | Art  |
+| Cutflower  | Sci  |
+| Deadyawn   | Art  |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Use CASE to show the name of each teacher followed by 'Sci' if the teacher is in dept 1 or 2, show 'Art' if the teacher's dept is 3 and 'None' otherwise.
+
+```sql
+SELECT 
+  teacher.name, 
+  CASE 
+    WHEN dept = 1 OR dept = 2 THEN 'Sci' 
+    WHEN dept = 3 THEN 'Art' 
+    ELSE 'None' 
+  END dept 
+FROM teacher
+```
+
+| name       | dept |
+| ---------- | ---- |
+| Shrivell   | Sci  |
+| Throd      | Sci  |
+| Splint     | Sci  |
+| Spiregrain | None |
+| Cutflower  | Sci  |
+| Deadyawn   | None |
 
 **[⬆ back to top](#table-of-contents)**
 
