@@ -24,6 +24,20 @@
     - [Show the name and the capital where the first letters of each match](#show-the-name-and-the-capital-where-the-first-letters-of-each-match)
     - [Find the country that has all the vowels and no spaces in its name](#find-the-country-that-has-all-the-vowels-and-no-spaces-in-its-name)
   - [**SELECT from nobel**](#select-from-nobel)
+    - [Change the query shown so that it displays Nobel prizes for 1950](#change-the-query-shown-so-that-it-displays-nobel-prizes-for-1950)
+    - [Show who won the 1962 prize for Literature](#show-who-won-the-1962-prize-for-literature)
+    - [Show the year and subject that won 'Albert Einstein' his prize.](#show-the-year-and-subject-that-won-albert-einstein-his-prize)
+    - [Give the name of the 'Peace' winners since the year 2000, including 2000.](#give-the-name-of-the-peace-winners-since-the-year-2000-including-2000)
+    - [Show all details (yr, subject, winner) of the Literature prize winners for 1980 to 1989 inclusive](#show-all-details-yr-subject-winner-of-the-literature-prize-winners-for-1980-to-1989-inclusive)
+    - [Show all details of the presidential winners](#show-all-details-of-the-presidential-winners)
+    - [Show the winners with first name John](#show-the-winners-with-first-name-john)
+    - [Show the year, subject, and name of Physics winners for 1980 together with the Chemistry winners for 1984](#show-the-year-subject-and-name-of-physics-winners-for-1980-together-with-the-chemistry-winners-for-1984)
+    - [Show the year, subject, and name of winners for 1980 excluding Chemistry and Medicine](#show-the-year-subject-and-name-of-winners-for-1980-excluding-chemistry-and-medicine)
+    - [Show year, subject, and name of people who won 'Medicine' and 'Literature' prizes](#show-year-subject-and-name-of-people-who-won-medicine-and-literature-prizes)
+    - [Find all details of the prize won by PETER GRÜNBERG](#find-all-details-of-the-prize-won-by-peter-grünberg)
+    - [Find all details of the prize won by EUGENE O'NEILL](#find-all-details-of-the-prize-won-by-eugene-oneill)
+    - [List the winners, year and subject where the winner starts with Sir](#list-the-winners-year-and-subject-where-the-winner-starts-with-sir)
+    - [Show the 1984 winners and subject ordered by subject and winner name; but list Chemistry and Physics last.](#show-the-1984-winners-and-subject-ordered-by-subject-and-winner-name-but-list-chemistry-and-physics-last)
   - [**Using nested SELECT**](#using-nested-select)
   - [**SELECT in SELECT**](#select-in-select)
     - [List each country name where the population is larger than that of 'Russia'.](#list-each-country-name-where-the-population-is-larger-than-that-of-russia)
@@ -528,8 +542,11 @@ nobel Table
 | 1960 | Medicine   | Sir Frank Macfarlane Burnet |
 | 1960 | Medicine   | Peter Madawar               |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Change the query shown so that it displays Nobel prizes for 1950
+
 ```sql
--- Change the query shown so that it displays Nobel prizes for 1950
 SELECT yr, subject, winner 
 FROM nobel
 WHERE yr = 1950
@@ -546,8 +563,11 @@ WHERE yr = 1950
 | 1950 | Peace      | Ralph Bunche      |
 | 1950 | Physics    | Cecil Powell      |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Show who won the 1962 prize for Literature
+
 ```sql
--- Show who won the 1962 prize for Literature
 SELECT winner
 FROM nobel
 WHERE yr = 1960 AND subject = 'Physics'
@@ -557,8 +577,11 @@ WHERE yr = 1960 AND subject = 'Physics'
 | -------------- |
 | John Steinbeck |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Show the year and subject that won 'Albert Einstein' his prize.
+
 ```sql
--- Show the year and subject that won 'Albert Einstein' his prize.
 SELECT yr, subject
 FROM nobel
 WHERE winner = 'Albert Einstein'
@@ -568,9 +591,11 @@ WHERE winner = 'Albert Einstein'
 | ---- | ------- |
 | 1921 | Physics |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Give the name of the 'Peace' winners since the year 2000, including 2000.
 
 ```sql
--- Give the name of the 'Peace' winners since the year 2000, including 2000.
 SELECT winner
 FROM nobel
 WHERE 
@@ -603,8 +628,11 @@ WHERE
 | Kofi Annan                                |
 | Kim Dae-jung                              |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Show all details (yr, subject, winner) of the Literature prize winners for 1980 to 1989 inclusive
+
 ```sql
--- Show all details (yr, subject, winner) of the Literature prize winners for 1980 to 1989 inclusive
 SELECT * 
 FROM nobel
 WHERE 
@@ -625,8 +653,11 @@ WHERE
 | 1981 | Literature | Elias Canetti          |
 | 1980 | Literature | Czeslaw Milosz         |
 
+**[⬆ back to top](#table-of-contents)**
+
+###  Show all details of the presidential winners
+
 ```sql
--- Show all details of the presidential winners:
 -- Theodore Roosevelt
 -- Woodrow Wilson
 -- Jimmy Carter
@@ -643,8 +674,11 @@ WHERE winner IN ('Theodore Roosevelt', 'Woodrow Wilson', 'Jimmy Carter','Barack 
 | 1919 | Peace   | Woodrow Wilson     |
 | 1906 | Peace   | Theodore Roosevelt |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Show the winners with first name John  
+
 ```sql
--- Show the winners with first name John  
 SELECT winner 
 FROM nobel
 WHERE winner LIKE 'John %'
@@ -679,8 +713,11 @@ WHERE winner LIKE 'John %'
 | John Galsworthy   |
 | John Macleod      |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Show the year, subject, and name of Physics winners for 1980 together with the Chemistry winners for 1984
+
 ```sql
--- Show the year, subject, and name of Physics winners for 1980 together with the Chemistry winners for 1984
 SELECT *
 FROM nobel
 WHERE 
@@ -694,8 +731,11 @@ WHERE
 | 1980 | Physics   | James Cronin     |
 | 1980 | Physics   | Val Fitch        |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Show the year, subject, and name of winners for 1980 excluding Chemistry and Medicine
+
 ```sql
--- Show the year, subject, and name of winners for 1980 excluding Chemistry and Medicine
 SELECT * 
 FROM nobel
 WHERE 
@@ -711,6 +751,10 @@ WHERE
 | 1980 | Peace      | Adolfo Pérez Esquivel |
 | 1980 | Physics    | James Cronin          |
 | 1980 | Physics    | Val Fitch             |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Show year, subject, and name of people who won 'Medicine' and 'Literature' prizes
 
 ```sql
 -- Show year, subject, and name of people who won a 'Medicine' prize in an early year (before 1910, not including 1910) together with winners of a 'Literature' prize in a later year (after 2004, including 2004)
@@ -747,8 +791,11 @@ WHERE
 | 1902 | Medicine   | Ronald Ross                  |
 | 1901 | Medicine   | Emil von Behring             |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Find all details of the prize won by PETER GRÜNBERG
+
 ```sql
--- Find all details of the prize won by PETER GRÜNBERG
 SELECT *
 FROM nobel
 WHERE winner ='PETER GRÜNBERG'
@@ -758,8 +805,11 @@ WHERE winner ='PETER GRÜNBERG'
 | ---- | ------- | -------------- |
 | 2007 | Physics | Peter Grünberg |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Find all details of the prize won by EUGENE O'NEILL
+
 ```sql
--- Find all details of the prize won by EUGENE O'NEILL
 SELECT *
 FROM nobel
 WHERE winner ='EUGENE O\'NEILL'
@@ -769,8 +819,11 @@ WHERE winner ='EUGENE O\'NEILL'
 | ---- | ---------- | -------------- |
 | 1936 | Literature | Eugene O'Neill |
 
+**[⬆ back to top](#table-of-contents)**
+
+### List the winners, year and subject where the winner starts with Sir
+
 ```sql
--- List the winners, year and subject where the winner starts with Sir
 -- Show the the most recent first, then by name order
 SELECT winner, yr, subject
 FROM nobel
@@ -802,10 +855,13 @@ ORDER BY yr DESC, winner
 | Sir Austen Chamberlain      | 1925 | Peace     |
 | Sir William Ramsay          | 1904 | Chemistry |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Show the 1984 winners and subject ordered by subject and winner name; but list Chemistry and Physics last.
+
 ```sql
 -- The expression subject IN ('Chemistry','Physics') can be used as a value - it will be 0 or 1. Is a boolean value
 -- subject IN ('Physics','Chemistry') => 'Physics': 1, 'Chemistry': 1, rest: 0
--- Show the 1984 winners and subject ordered by subject and winner name; but list Chemistry and Physics last.
 
 SELECT winner, subject
 FROM nobel
