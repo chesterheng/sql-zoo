@@ -30,8 +30,25 @@
     - [Counting the countries of each continent](#counting-the-countries-of-each-continent)
     - [Counting big countries in each continent](#counting-big-countries-in-each-continent)
     - [Counting big continents](#counting-big-continents)
+  - [**Basic SQL Join Types**](#basic-sql-join-types)
+    - [Inner Join](#inner-join)
+    - [Left Join](#left-join)
+    - [Right Join](#right-join)
+    - [Full Join](#full-join)
   - [**JOIN**](#join)
-    - [Basic SQL Join Types](#basic-sql-join-types)
+    - [Show the matchid and player name for all goals scored by Germany.](#show-the-matchid-and-player-name-for-all-goals-scored-by-germany)
+    - [Show id, stadium, team1, team2 for just game 1012](#show-id-stadium-team1-team2-for-just-game-1012)
+    - [Show the player, teamid, stadium and mdate for every German goal.](#show-the-player-teamid-stadium-and-mdate-for-every-german-goal)
+    - [Show the team1, team2 and player for every goal scored by a player called Mario player LIKE 'Mario%'](#show-the-team1-team2-and-player-for-every-goal-scored-by-a-player-called-mario-player-like-mario)
+    - [Show player, teamid, coach, gtime for all goals scored in the first 10 minutes gtime<=10](#show-player-teamid-coach-gtime-for-all-goals-scored-in-the-first-10-minutes-gtime10)
+    - [List the dates of the matches and the name of the team in which 'Fernando Santos' was the team1 coach.](#list-the-dates-of-the-matches-and-the-name-of-the-team-in-which-fernando-santos-was-the-team1-coach)
+    - [List the player for every goal scored in a game where the stadium was 'National Stadium, Warsaw'](#list-the-player-for-every-goal-scored-in-a-game-where-the-stadium-was-national-stadium-warsaw)
+    - [Show the name of all players who scored a goal against Germany.](#show-the-name-of-all-players-who-scored-a-goal-against-germany)
+    - [Show teamname and the total number of goals scored.](#show-teamname-and-the-total-number-of-goals-scored)
+    - [Show the stadium and the number of goals scored in each stadium.](#show-the-stadium-and-the-number-of-goals-scored-in-each-stadium)
+    - [For every match involving 'POL', show the matchid, date and the number of goals scored.](#for-every-match-involving-pol-show-the-matchid-date-and-the-number-of-goals-scored)
+    - [For every match where 'GER' scored, show matchid, match date and the number of goals scored by 'GER'](#for-every-match-where-ger-scored-show-matchid-match-date-and-the-number-of-goals-scored-by-ger)
+    - [List every match with the goals scored by each team as shown.](#list-every-match-with-the-goals-scored-by-each-team-as-shown)
   - [**More JOIN**](#more-join)
   - [**Using NULL**](#using-null)
   - [**Self JOIN**](#self-join)
@@ -44,7 +61,9 @@
 | Table                           | Keywords | Filters & Values                                                           |
 | ------------------------------- | -------- | -------------------------------------------------------------------------- |
 | SELECT (columns and processed)  | DISTINCT | Binary Numeric and string comparison operator: =, <, <=, >, >=, !=, <>, () |
-| FROM (table)                    | LIMIT    | Add ALL or ANY when right side of the operator have multiple values        |
+| FROM (table A)                  | LIMIT    | Add ALL or ANY when right side of the operator have multiple values        |
+| JOIN (table B)                  |          |                                                                            |
+| ON A.column=B.column            |          |                                                                            |
 | WHERE (filter rows, then group) | ASC      | List one value: = value                                                    |
 | GROUP BY                        | DESC     | List many values: IN (value1, value2, ...)                                 |
 | HAVING (filter groups)          |          | Inclusive ranges: BETWEEN min AND max                                      |
@@ -1393,9 +1412,7 @@ HAVING SUM(population) > 100000000
 
 **[⬆ back to top](#table-of-contents)**
 
-## **JOIN**
-
-### Basic SQL Join Types
+## **Basic SQL Join Types**
 
 | customer_id | first_name | last_name  | email               | address                   | city            | state | zipcode |
 | ----------- | ---------- | ---------- | ------------------- | ------------------------- | --------------- | ----- | ------- |
@@ -1414,6 +1431,10 @@ HAVING SUM(population) > 100000000
 | 5        | 07/21/1795 | $25.50  | 10          |
 | 6        | 11/27/1787 | $14.40  | 9           |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Inner Join
+
 ```sql
 -- Inner Join
 select first_name, last_name, order_date, order_amount
@@ -1428,6 +1449,10 @@ on c.customer_id = o.customer_id
 | John       | Adams      | 05/23/1784 | $124.00      |
 | Thomas     | Jefferson  | 03/14/1760 | $78.50       |
 | Thomas     | Jefferson  | 09/03/1790 | $65.50       |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Left Join
 
 ```sql
 -- Left Join
@@ -1446,6 +1471,10 @@ on c.customer_id = o.customer_id
 | James      | Madison    | NULL       | NULL         |
 | James      | Monroe     | NULL       | NULL         |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Right Join
+
 ```sql
 -- Right Join
 select first_name, last_name, order_date, order_amount
@@ -1462,6 +1491,10 @@ on c.customer_id = o.customer_id
 | Thomas     | Jefferson  | 09/03/1790 | $65.50       |
 | NULL       | NULL       | 07/21/1795 | $25.50       |
 | NULL       | NULL       | 11/27/1787 | $14.40       |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Full Join
 
 ```sql
 -- Full Join
@@ -1481,6 +1514,327 @@ on c.customer_id = o.customer_id
 | NULL       | NULL       | 11/27/1787 | $14.40       |
 | James      | Madison    | NULL       | NULL         |
 | James      | Monroe     | NULL       | NULL         |
+
+**[⬆ back to top](#table-of-contents)**
+
+## **JOIN**
+
+game Table
+
+| id   | mdate        | stadium                   | team1 | team2 |
+| ---- | ------------ | ------------------------- | ----- | ----- |
+| 1001 | 8 June 2012  | National Stadium, Warsaw  | POL   | GRE   |
+| 1002 | 8 June 2012  | Stadion Miejski (Wroclaw) | RUS   | CZE   |
+| 1003 | 12 June 2012 | Stadion Miejski (Wroclaw) | GRE   | CZE   |
+| 1004 | 12 June 2012 | National Stadium, Warsaw  | POL   | RUS   |
+
+goal Table
+
+| matchid | teamid | player               | gtime |
+| ------- | ------ | -------------------- | ----- |
+| 1001    | POL    | Robert Lewandowski   | 17    |
+| 1001    | GRE    | Dimitris Salpingidis | 51    |
+| 1002    | RUS    | Alan Dzagoev         | 15    |
+| 1002    | RUS    | Roman Pavlyuchenko   | 82    |
+
+eteam Table
+
+| id  | teamname       | coach            |
+| --- | -------------- | ---------------- |
+| POL | Poland         | Franciszek Smuda |
+| RUS | Russia         | Dick Advocaat    |
+| CZE | Czech Republic | Michal Bilek     |
+| GRE | Greece         | Fernando Santos  |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Show the matchid and player name for all goals scored by Germany. 
+
+```sql
+SELECT matchid, player 
+FROM goal 
+WHERE teamid = 'GER'
+```
+
+| matchid | player         |
+| ------- | -------------- |
+| 1008    | Mario Gómez    |
+| 1010    | Mario Gómez    |
+| 1010    | Mario Gómez    |
+| 1012    | Lukas Podolski |
+| 1012    | Lars Bender    |
+| 1026    | Philipp Lahm   |
+| 1026    | Sami Khedira   |
+| 1026    | Miroslav Klose |
+| 1026    | Marco Reus     |
+| 1030    | Mesut Özil     |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Show id, stadium, team1, team2 for just game 1012
+
+```sql
+SELECT id, stadium, team1, team2
+FROM game 
+WHERE id = 1012
+```
+
+| id   | stadium    | team1 | team2 |
+| ---- | ---------- | ----- | ----- |
+| 1012 | Arena Lviv | DEN   | GER   |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Show the player, teamid, stadium and mdate for every German goal.
+
+```sql
+SELECT player, teamid, stadium, mdate
+FROM game 
+JOIN goal 
+ON 
+  id = matchid AND 
+  teamid ='GER'
+```
+
+| player         | teamid | stadium                  | mdate        |
+| -------------- | ------ | ------------------------ | ------------ |
+| Mario Gómez    | GER    | Arena Lviv               | 9 June 2012  |
+| Mario Gómez    | GER    | Metalist Stadium         | 13 June 2012 |
+| Mario Gómez    | GER    | Metalist Stadium         | 13 June 2012 |
+| Lukas Podolski | GER    | Arena Lviv               | 17 June 2012 |
+| Lars Bender    | GER    | Arena Lviv               | 17 June 2012 |
+| Philipp Lahm   | GER    | PGE Arena Gdansk         | 22 June 2012 |
+| Sami Khedira   | GER    | PGE Arena Gdansk         | 22 June 2012 |
+| Miroslav Klose | GER    | PGE Arena Gdansk         | 22 June 2012 |
+| Marco Reus     | GER    | PGE Arena Gdansk         | 22 June 2012 |
+| Mesut Özil     | GER    | National Stadium, Warsaw | 28 June 2012 |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Show the team1, team2 and player for every goal scored by a player called Mario player LIKE 'Mario%'
+
+```sql
+SELECT team1, team2, player
+FROM game 
+JOIN goal 
+ON 
+  id = matchid AND 
+  player LIKE 'Mario%'
+```
+
+| team1 | team2 | player          |
+| ----- | ----- | --------------- |
+| GER   | POR   | Mario Gómez     |
+| NED   | GER   | Mario Gómez     |
+| NED   | GER   | Mario Gómez     |
+| IRL   | CRO   | Mario Mandžukic |
+| IRL   | CRO   | Mario Mandžukic |
+| ITA   | CRO   | Mario Mandžukic |
+| ITA   | IRL   | Mario Balotelli |
+| GER   | ITA   | Mario Balotelli |
+| GER   | ITA   | Mario Balotelli |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Show player, teamid, coach, gtime for all goals scored in the first 10 minutes gtime<=10
+
+```sql
+SELECT player, teamid, coach, gtime
+FROM goal
+JOIN eteam
+ON id = teamid
+WHERE gtime <= 10
+```
+
+| player          | teamid | coach              | gtime |
+| --------------- | ------ | ------------------ | ----- |
+| Petr Jirácek    | CZE    | Michal Bílek       | 3     |
+| Václav Pilar    | CZE    | Michal Bílek       | 6     |
+| Mario Mandžukic | CRO    | Slaven Bilic       | 3     |
+| Fernando Torres | ESP    | Vicente del Bosque | 4     |
+
+**[⬆ back to top](#table-of-contents)**
+
+### List the dates of the matches and the name of the team in which 'Fernando Santos' was the team1 coach.
+
+```sql
+SELECT mdate, teamname
+FROM game
+JOIN eteam
+ON team1 = eteam.id
+WHERE coach = 'Fernando Santos'
+```
+
+| mdate        | teamname |
+| ------------ | -------- |
+| 12 June 2012 | Greece   |
+| 16 June 2012 | Greece   |
+
+**[⬆ back to top](#table-of-contents)**
+
+### List the player for every goal scored in a game where the stadium was 'National Stadium, Warsaw'
+
+```sql
+SELECT player
+FROM goal
+JOIN game 
+ON matchid = id
+WHERE stadium ='National Stadium, Warsaw'
+```
+
+| player               |
+| -------------------- |
+| Robert Lewandowski   |
+| Dimitris Salpingidis |
+| Alan Dzagoev         |
+| Jakub Blaszczykowski |
+| Giorgos Karagounis   |
+| Cristiano Ronaldo    |
+| Mario Balotelli      |
+| Mario Balotelli      |
+| Mesut Özil           |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Show the name of all players who scored a goal against Germany.
+
+```sql
+SELECT DISTINCT player
+FROM game
+JOIN goal
+ON id = matchid
+WHERE 
+  (team1 = 'GER' OR team2 = 'GER') AND 
+  teamid <> 'GER' 
+```
+
+| player               |
+| -------------------- |
+| Robin van Persie     |
+| Michael Krohn-Dehli  |
+| Georgios Samaras     |
+| Dimitris Salpingidis |
+| Mario Balotelli      |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Show teamname and the total number of goals scored.
+
+```sql
+SELECT 
+  teamname, 
+  count(teamname) AS 'total number of goals'
+FROM eteam 
+JOIN goal 
+ON id = teamid
+GROUP BY teamname
+```
+
+| teamname            | total number of goals |
+| ------------------- | --------------------- |
+| Croatia             | 4                     |
+| Czech Republic      | 4                     |
+| Denmark             | 4                     |
+| England             | 5                     |
+| France              | 3                     |
+| Germany             | 10                    |
+| Greece              | 5                     |
+| Italy               | 6                     |
+| Netherlands         | 2                     |
+| Poland              | 2                     |
+| Portugal            | 6                     |
+| Republic of Ireland | 1                     |
+| Russia              | 5                     |
+| Spain               | 12                    |
+| Sweden              | 5                     |
+| Ukraine             | 2                     |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Show the stadium and the number of goals scored in each stadium.
+
+```sql
+SELECT stadium, COUNT(stadium) AS 'number of goals'
+FROM game
+JOIN goal 
+ON id = matchid
+GROUP BY stadium
+```
+
+| stadium                             | number of goals |
+| ----------------------------------- | --------------- |
+| Arena Lviv                          | 9               |
+| Donbass Arena                       | 7               |
+| Metalist Stadium                    | 7               |
+| National Stadium, Warsaw            | 9               |
+| Olimpiyskiy National Sports Complex | 14              |
+| PGE Arena Gdansk                    | 13              |
+| Stadion Miejski (Poznan)            | 8               |
+| Stadion Miejski (Wroclaw)           | 9               |
+
+**[⬆ back to top](#table-of-contents)**
+
+### For every match involving 'POL', show the matchid, date and the number of goals scored.
+
+```sql
+SELECT id, mdate, COUNT(id) AS 'number of goals'
+FROM game
+JOIN goal
+ON id = matchid 
+WHERE (team1 = 'POL' OR team2 = 'POL')
+GROUP BY id
+```
+
+| id   | mdate        | number of goals |
+| ---- | ------------ | --------------- |
+| 1001 | 8 June 2012  | 2               |
+| 1004 | 12 June 2012 | 2               |
+| 1005 | 16 June 2012 | 1               |
+
+**[⬆ back to top](#table-of-contents)**
+
+### For every match where 'GER' scored, show matchid, match date and the number of goals scored by 'GER'
+
+```sql
+SELECT matchid, mdate, count(matchid) AS 'number of goals'
+FROM goal
+JOIN game
+ON matchid = id
+WHERE teamid = 'GER'
+GROUP BY matchid
+```
+
+| matchid | mdate        | number of goals |
+| ------- | ------------ | --------------- |
+| 1008    | 9 June 2012  | 1               |
+| 1010    | 13 June 2012 | 2               |
+| 1012    | 17 June 2012 | 2               |
+| 1026    | 22 June 2012 | 4               |
+| 1030    | 28 June 2012 | 1               |
+
+**[⬆ back to top](#table-of-contents)**
+
+### List every match with the goals scored by each team as shown.
+
+```sql
+SELECT 
+  mdate, 
+  team1,
+  SUM(CASE WHEN teamid = team1 THEN 1 ELSE 0 END) score1,
+  team2,
+  SUM(CASE WHEN teamid = team2 THEN 1 ELSE 0 END) score2
+FROM game
+LEFT JOIN goal 
+ON matchid = id
+GROUP BY id
+ORDER BY mdate, matchid, team1, team2 
+```
+
+| mdate        | team1 | score1 | team2 | score2 |
+| ------------ | ----- | ------ | ----- | ------ |
+| 1 July 2012  | ESP   | 4      | ITA   | 0      |
+| 10 June 2012 | ESP   | 1      | ITA   | 1      |
+| 10 June 2012 | IRL   | 1      | CRO   | 3      |
 
 **[⬆ back to top](#table-of-contents)**
 
