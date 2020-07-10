@@ -39,6 +39,10 @@
     - [List the winners, year and subject where the winner starts with Sir](#list-the-winners-year-and-subject-where-the-winner-starts-with-sir)
     - [Show the 1984 winners and subject ordered by subject and winner name; but list Chemistry and Physics last.](#show-the-1984-winners-and-subject-ordered-by-subject-and-winner-name-but-list-chemistry-and-physics-last)
   - [**Using nested SELECT**](#using-nested-select)
+    - [List each country in the same continent as 'Brazil'.](#list-each-country-in-the-same-continent-as-brazil)
+    - [List each country and its continent in the same continent as 'Brazil' or 'Mexico'.](#list-each-country-and-its-continent-in-the-same-continent-as-brazil-or-mexico)
+    - [Show the population of China as a multiple of the population of the United Kingdom](#show-the-population-of-china-as-a-multiple-of-the-population-of-the-united-kingdom)
+    - [Show each country that has a population greater than the population of ALL countries in Europe.](#show-each-country-that-has-a-population-greater-than-the-population-of-all-countries-in-europe)
   - [**SELECT in SELECT**](#select-in-select)
     - [List each country name where the population is larger than that of 'Russia'.](#list-each-country-name-where-the-population-is-larger-than-that-of-russia)
     - [Show the countries in Europe with a per capita GDP greater than 'United Kingdom'.](#show-the-countries-in-europe-with-a-per-capita-gdp-greater-than-united-kingdom)
@@ -895,8 +899,11 @@ world Table
 | Andorra     | Europe    | 468     | 78115      | 3712000000   |
 | Angola      | Africa    | 1246700 | 20609294   | 100990000000 |
 
+**[⬆ back to top](#table-of-contents)**
+
+### List each country in the same continent as 'Brazil'.
+
 ```sql
--- List each country in the same continent as 'Brazil'.
 SELECT continent
 FROM world
 WHERE name = 'Brazil'
@@ -926,8 +933,11 @@ WHERE continent = (SELECT continent FROM world WHERE name = 'Brazil')
 | Uruguay                          |
 | Venezuela                        |
 
+**[⬆ back to top](#table-of-contents)**
+
+### List each country and its continent in the same continent as 'Brazil' or 'Mexico'.
+
 ```sql
--- List each country and its continent in the same continent as 'Brazil' or 'Mexico'.
 SELECT continent
 FROM world
 WHERE name='Brazil' OR name='Mexico'
@@ -969,8 +979,11 @@ WHERE continent IN (SELECT continent FROM world WHERE name='Brazil' OR name='Mex
 | Saint Kitts and Nevis            | North America |
 | United States                    | North America |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Show the population of China as a multiple of the population of the United Kingdom
+
 ```sql
--- Show the population of China as a multiple of the population of the United Kingdom
 SELECT population
 FROM world
 WHERE name='United Kingdom'
@@ -989,8 +1002,11 @@ WHERE name = 'China'
 | ------------------------------------------------ |
 | 21.1089                                          |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Show each country that has a population greater than the population of ALL countries in Europe.
+
 ```sql
--- Show each country that has a population greater than the population of ALL countries in Europe.
 SELECT population
 FROM world
 WHERE continent='Europe'
