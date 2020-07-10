@@ -9,8 +9,20 @@
     - [show the population of Germany](#show-the-population-of-germany)
     - [Show the name and the population for 'Sweden', 'Norway' and 'Denmark'](#show-the-name-and-the-population-for-sweden-norway-and-denmark)
     - [show the country and the area for countries with an area between 200,000 and 250,000](#show-the-country-and-the-area-for-countries-with-an-area-between-200000-and-250000)
-  - [**SELECT Quiz**](#select-quiz)
   - [**SELECT from world**](#select-from-world)
+    - [show the name, continent and population of all countries](#show-the-name-continent-and-population-of-all-countries)
+    - [Show the name for the countries that have a population of at least 200 million](#show-the-name-for-the-countries-that-have-a-population-of-at-least-200-million)
+    - [Give the name and the per capita GDP for those countries with a population of at least 200 million](#give-the-name-and-the-per-capita-gdp-for-those-countries-with-a-population-of-at-least-200-million)
+    - [Show the name and population in millions for the countries of the continent 'South America'](#show-the-name-and-population-in-millions-for-the-countries-of-the-continent-south-america)
+    - [Show the name and population for France, Germany, Italy](#show-the-name-and-population-for-france-germany-italy)
+    - [Show the countries which have a name that includes the word 'United'](#show-the-countries-which-have-a-name-that-includes-the-word-united)
+    - [Show the countries that are big by area or big by population.](#show-the-countries-that-are-big-by-area-or-big-by-population)
+    - [Show the countries that are big by area (more than 3 million) or big by population (more than 250 million) but not both](#show-the-countries-that-are-big-by-area-more-than-3-million-or-big-by-population-more-than-250-million-but-not-both)
+    - [For South America show population in millions and GDP in billions both to 2 decimal places](#for-south-america-show-population-in-millions-and-gdp-in-billions-both-to-2-decimal-places)
+    - [Show per-capita GDP for the trillion dollar countries to the nearest $1000](#show-per-capita-gdp-for-the-trillion-dollar-countries-to-the-nearest-1000)
+    - [Show the name and capital where the name and the capital have the same number of characters](#show-the-name-and-capital-where-the-name-and-the-capital-have-the-same-number-of-characters)
+    - [Show the name and the capital where the first letters of each match](#show-the-name-and-the-capital-where-the-first-letters-of-each-match)
+    - [Find the country that has all the vowels and no spaces in its name](#find-the-country-that-has-all-the-vowels-and-no-spaces-in-its-name)
   - [**SELECT from nobel**](#select-from-nobel)
   - [**Using nested SELECT**](#using-nested-select)
   - [**SELECT in SELECT**](#select-in-select)
@@ -181,87 +193,9 @@ WHERE area BETWEEN 200000 AND 250000
 
 **[⬆ back to top](#table-of-contents)**
 
-## **SELECT Quiz**
+## **SELECT from world**
 
 world Table
-
-| name        | region      | area    | population | gdp         |
-| ----------- | ----------- | ------- | ---------- | ----------- |
-| Afghanistan | South Asia  | 652225  | 26000000   |             |
-| Albania     | Europe      | 28728   | 3200000    | 6656000000  |
-| Algeria     | Middle East | 2400000 | 32900000   | 75012000000 |
-| Andorra     | Europe      | 468     | 64000      |             |
-
-```sql
-SELECT name, population
-FROM world
-WHERE population BETWEEN 1000000 AND 1250000
-```
-
-| name        | population |
-| ----------- | ---------- |
-| Bahrain     | 1234571    |
-| Swaziland   | 1220000    |
-| Timor-Leste | 1066409    |
-
-```sql
-SELECT name, population 
-FROM world
-WHERE name LIKE "Al%"
-```
-
-| name    | population |
-| ------- | ---------- |
-| Albania | 3200000    |
-| Algeria | 32900000   |
-
-```sql
--- shows the countries that end in A or L
-SELECT name 
-FROM world
-WHERE name LIKE '%a' OR 'l%'
-```
-
-```sql
-SELECT name,LENGTH(name) 
-FROM world
-WHERE length(name)=5 and region='Europe'
-```
-
-| name  | length(name) |
-| ----- | ------------ |
-| Italy | 5            |
-| Malta | 5            |
-| Spain | 5            |
-
-```sql
-SELECT name, area*2 
-FROM world 
-WHERE population = 64000
-```
-
-| name    | area*2 |
-| ------- | ------ |
-| Andorra | 936    |
-
-
-```sql
--- show the countries with an area larger than 50000 and a population smaller than 10000000
-SELECT name, area, population 
-FROM world
-WHERE area > 50000 AND population < 10000000
-```
-
-```sql
--- shows the population density of China, Australia, Nigeria and France
-SELECT name, population/area 
-FROM world
-WHERE name IN ('China', 'Nigeria', 'France', 'Australia')
-```
-
-**[⬆ back to top](#table-of-contents)**
-
-## **SELECT from world**
 
 | name        | continent | area    | population | gdp          |
 | ----------- | --------- | ------- | ---------- | ------------ |
@@ -271,8 +205,11 @@ WHERE name IN ('China', 'Nigeria', 'France', 'Australia')
 | Andorra     | Europe    | 468     | 78115      | 3712000000   |
 | Angola      | Africa    | 1246700 | 20609294   | 100990000000 |
 
+**[⬆ back to top](#table-of-contents)**
+
+### show the name, continent and population of all countries
+
 ```sql
--- show the name, continent and population of all countries
 SELECT name, continent, population 
 FROM world
 ```
@@ -285,8 +222,11 @@ FROM world
 | Andorra     | Europe    | 78115      |
 | Angola      | Africa    | 20609294   |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Show the name for the countries that have a population of at least 200 million
+
 ```sql
--- Show the name for the countries that have a population of at least 200 million
 SELECT name 
 FROM world
 WHERE population >= 200000000
@@ -302,8 +242,11 @@ WHERE population >= 200000000
 | Pakistan      |
 | United States |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Give the name and the per capita GDP for those countries with a population of at least 200 million
+
 ```sql
--- Give the name and the per capita GDP for those countries with a population of at least 200 million
 SELECT name, gdp/population as 'per capita GDP' 
 FROM world
 WHERE population >= 200000000
@@ -319,8 +262,11 @@ WHERE population >= 200000000
 | Pakistan      | 1377.0363      |
 | United States | 59121.1921     |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Show the name and population in millions for the countries of the continent 'South America'
+
 ```sql
--- Show the name and population in millions for the countries of the continent 'South America'
 SELECT name, population/1000000 as 'population in millions' 
 FROM world
 WHERE continent = 'South America'
@@ -342,8 +288,11 @@ WHERE continent = 'South America'
 | Uruguay                          | 3.5186                 |
 | Venezuela                        | 32.2195                |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Show the name and population for France, Germany, Italy
+
 ```sql
--- Show the name and population for France, Germany, Italy
 SELECT name, population 
 FROM world
 WHERE name IN ('France', 'Germany', 'Italy')
@@ -355,8 +304,11 @@ WHERE name IN ('France', 'Germany', 'Italy')
 | Germany | 83149300   |
 | Italy   | 60238522   |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Show the countries which have a name that includes the word 'United'
+
 ```sql
--- Show the countries which have a name that includes the word 'United'
 SELECT name 
 FROM world
 WHERE name LIKE '%United%'
@@ -368,8 +320,11 @@ WHERE name LIKE '%United%'
 | United Kingdom       |
 | United States        |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Show the countries that are big by area or big by population. 
+
 ```sql
--- Show the countries that are big by area or big by population. 
 -- Show name, population and area
 SELECT name, population, area 
 FROM world
@@ -387,10 +342,12 @@ WHERE area > 3000000 OR population > 250000000
 | Russia        | 146745098  | 17125242 |
 | United States | 329583916  | 9826675  |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Show the countries that are big by area (more than 3 million) or big by population (more than 250 million) but not both
 
 ```sql
 -- Exclusive OR (XOR)
--- Show the countries that are big by area (more than 3 million) or big by population (more than 250 million) but not both
 -- Show name, population and area.
 SELECT name, population, area 
 FROM world
@@ -405,8 +362,11 @@ WHERE area > 3000000 XOR population > 250000000
 | Indonesia | 266911900  | 1904569  |
 | Russia    | 146745098  | 17125242 |
 
+**[⬆ back to top](#table-of-contents)**
+
+### For South America show population in millions and GDP in billions both to 2 decimal places
+
 ```sql
--- For South America show population in millions and GDP in billions both to 2 decimal places
 SELECT 
   name, 
   ROUND(population/1000000, 2) as 'population in millions', 
@@ -431,8 +391,11 @@ WHERE  continent = 'South America'
 | Uruguay                          | 3.52                   | 59.18           |
 | Venezuela                        | 32.22                  | 255.09          |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Show per-capita GDP for the trillion dollar countries to the nearest $1000
+
 ```sql
--- Show per-capita GDP for the trillion dollar countries to the nearest $1000
 SELECT name, ROUND(gdp/population, -3) as 'per-capita GDP' 
 FROM world
 WHERE gdp >= 1000000000000
@@ -457,9 +420,11 @@ WHERE gdp >= 1000000000000
 | United Kingdom | 40000          |
 | United States  | 59000          |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Show the name and capital where the name and the capital have the same number of characters
 
 ```sql
--- Show the name and capital where the name and the capital have the same number of characters
 SELECT name, capital 
 FROM world
 WHERE LENGTH(name) = LENGTH(capital)
@@ -493,8 +458,11 @@ WHERE LENGTH(name) = LENGTH(capital)
 | Turkey     | Ankara     |
 | Zambia     | Lusaka     |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Show the name and the capital where the first letters of each match
+
 ```sql
--- Show the name and the capital where the first letters of each match
 -- Don't include countries where the name and the capital are the same word
 SELECT name, capital 
 FROM world 
@@ -527,8 +495,11 @@ where LEFT(name,1) = left(capital,1) AND name <> capital
 | Taiwan                | Taipei                    |
 | Tunisia               | Tunis                     |
 
+**[⬆ back to top](#table-of-contents)**
+
+### Find the country that has all the vowels and no spaces in its name
+
 ```sql
--- Find the country that has all the vowels and no spaces in its name
 SELECT name 
 FROM world
 WHERE 
