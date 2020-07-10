@@ -49,7 +49,23 @@
     - [For every match involving 'POL', show the matchid, date and the number of goals scored.](#for-every-match-involving-pol-show-the-matchid-date-and-the-number-of-goals-scored)
     - [For every match where 'GER' scored, show matchid, match date and the number of goals scored by 'GER'](#for-every-match-where-ger-scored-show-matchid-match-date-and-the-number-of-goals-scored-by-ger)
     - [List every match with the goals scored by each team as shown.](#list-every-match-with-the-goals-scored-by-each-team-as-shown)
-  - [**More JOIN**](#more-join)
+  - [**More JOIN operations**](#more-join-operations)
+    - [1962 movies](#1962-movies)
+    - [When was Citizen Kane released?](#when-was-citizen-kane-released)
+    - [Star Trek movies](#star-trek-movies)
+    - [id for actor Glenn Close](#id-for-actor-glenn-close)
+    - [id for Casablanca](#id-for-casablanca)
+    - [Cast list for Casablanca](#cast-list-for-casablanca)
+    - [Cast list for Casablanca](#cast-list-for-casablanca-1)
+    - [Alien cast list](#alien-cast-list)
+    - [Harrison Ford movies](#harrison-ford-movies)
+    - [Harrison Ford as a supporting actor](#harrison-ford-as-a-supporting-actor)
+    - [Lead actors in 1962 movies](#lead-actors-in-1962-movies)
+    - [Busy years for Rock Hudson](#busy-years-for-rock-hudson)
+    - [Lead actor in Julie Andrews movies](#lead-actor-in-julie-andrews-movies)
+    - [Actors with 15 leading roles](#actors-with-15-leading-roles)
+    - [List the films released in the year 1978](#list-the-films-released-in-the-year-1978)
+    - [List all the people who have worked with 'Art Garfunkel'.](#list-all-the-people-who-have-worked-with-art-garfunkel)
   - [**Using NULL**](#using-null)
   - [**Self JOIN**](#self-join)
 
@@ -58,16 +74,16 @@
 - [SQL Zoo](https://sqlzoo.net/wiki/SELECT_basics)
 - [SQL PD](https://sqlpd.com)
 
-| Table                           | Keywords | Filters & Values                                                           |
-| ------------------------------- | -------- | -------------------------------------------------------------------------- |
-| SELECT (columns and processed)  | DISTINCT | Binary Numeric and string comparison operator: =, <, <=, >, >=, !=, <>, () |
-| FROM (table A)                  | LIMIT    | Add ALL or ANY when right side of the operator have multiple values        |
-| JOIN (table B)                  |          |                                                                            |
-| ON A.column=B.column            |          |                                                                            |
-| WHERE (filter rows, then group) | ASC      | List one value: = value                                                    |
-| GROUP BY                        | DESC     | List many values: IN (value1, value2, ...)                                 |
-| HAVING (filter groups)          |          | Inclusive ranges: BETWEEN min AND max                                      |
-| ORDER BY (sort rows)            |          | Logical Operators: NOT, AND, OR, XOR                                       |
+| Table                               | Keywords | Filters & Values                                                           |
+| ----------------------------------- | -------- | -------------------------------------------------------------------------- |
+| SELECT column1, AGGREGATE (column2) | DISTINCT | Binary Numeric and string comparison operator: =, <, <=, >, >=, !=, <>, () |
+| FROM [table A]                      | LIMIT    | Add ALL or ANY when right side of the operator have multiple values        |
+| JOIN [table B]                      | ASC      | List one value: = value                                                    |
+| ON A.column=B.column                | DESC     | List many values: IN (value1, value2, ...)                                 |
+| WHERE [filter rows, then group]     |          | Inclusive ranges: BETWEEN min AND max                                      |
+| GROUP BY                            |          | Logical Operators: NOT, AND, OR, XOR                                       |
+| HAVING [filter groups]              |          | Aggregate Functions:  MIN, MAX, AVG, SUM, or COUNT                         |
+| ORDER BY [sort rows]                |          |                                                                            |
 
 - The WHERE clause is applied before the GROUP BY clause.
 - The WHERE clause applies the condition to individual rows before the rows are summarized into groups by the GROUP BY clause.
@@ -1838,7 +1854,381 @@ ORDER BY mdate, matchid, team1, team2
 
 **[⬆ back to top](#table-of-contents)**
 
-## **More JOIN**
+## **More JOIN operations**
+
+movie Table
+
+| id  | title | yr  | director | budget | gross |
+| --- | ----- | --- | -------- | ------ | ----- |
+
+actor Table
+
+| id  | name |
+| --- | ---- |
+
+casting Table
+
+| movieid | actorid | ord |
+| ------- | ------- | --- |
+
+**[⬆ back to top](#table-of-contents)**
+
+### 1962 movies
+
+```sql
+-- List the films where the yr is 1962 [Show id, title]
+SELECT id, title
+FROM movie
+WHERE yr = 1962
+```
+
+| id    | title                        |
+| ----- | ---------------------------- |
+| 10212 | A Kind of Loving             |
+| 10329 | A Symposium on Popular Songs |
+| 10347 | A Very Private Affair        |
+| 10648 | An Autumn Afternoon          |
+
+**[⬆ back to top](#table-of-contents)**
+
+### When was Citizen Kane released?
+
+```sql
+-- Give year of 'Citizen Kane'.
+SELECT yr 
+FROM movie 
+WHERE title = 'Citizen Kane'
+```
+
+| yr   |
+| ---- |
+| 1941 |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Star Trek movies
+
+```sql
+-- List all of the Star Trek movies, include the id, title and yr (all of these movies include the words Star Trek in the title). 
+-- Order results by year.
+SELECT id, title, yr
+FROM movie 
+WHERE title LIKE '%star trek%' 
+ORDER BY yr
+```
+
+| id    | title                                  | yr   |
+| ----- | -------------------------------------- | ---- |
+| 17772 | Star Trek: The Motion Picture          | 1979 |
+| 17775 | Star Trek II: The Wrath of Khan        | 1982 |
+| 17776 | Star Trek III: The Search for Spock    | 1984 |
+| 17777 | Star Trek IV: The Voyage Home          | 1986 |
+| 17779 | Star Trek V: The Final Frontier        | 1989 |
+| 17780 | Star Trek VI: The Undiscovered Country | 1991 |
+| 17774 | Star Trek Generations                  | 1994 |
+| 17770 | Star Trek: First Contact               | 1996 |
+| 17771 | Star Trek: Insurrection                | 1998 |
+| 17778 | Star Trek Nemesis                      | 2002 |
+| 17773 | Star Trek                              | 2009 |
+
+**[⬆ back to top](#table-of-contents)**
+
+### id for actor Glenn Close
+
+```sql
+-- What id number does the actor 'Glenn Close' have?
+SELECT id
+FROM actor
+WHERE name = 'Glenn Close'
+```
+
+| id  |
+| --- |
+| 140 |
+
+**[⬆ back to top](#table-of-contents)**
+
+### id for Casablanca
+
+```sql
+-- What is the id of the film 'Casablanca'
+SELECT id
+FROM movie
+WHERE title = 'Casablanca'
+```
+
+| id    |
+| ----- |
+| 11768 |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Cast list for Casablanca
+
+```sql
+-- Obtain the cast list for 'Casablanca'.
+SELECT name
+FROM actor
+JOIN casting 
+ON id = actorid 
+WHERE movieid = 11768
+```
+
+| name             |
+| ---------------- |
+| Peter Lorre      |
+| John Qualen      |
+| Madeleine LeBeau |
+| Jack Benny       |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Cast list for Casablanca
+
+```sql
+-- Obtain the cast list for 'Casablanca'.
+SELECT name
+FROM actor
+JOIN casting 
+ON id = actorid 
+WHERE movieid = 11768
+```
+
+| name             |
+| ---------------- |
+| Peter Lorre      |
+| John Qualen      |
+| Madeleine LeBeau |
+| Jack Benny       |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Alien cast list
+
+```sql
+-- Obtain the cast list for the film 'Alien'
+SELECT name
+FROM actor 
+JOIN casting
+ON actor.id = casting.actorid
+where movieid = (
+  SELECT id 
+  FROM movie 
+  WHERE title='Alien')
+```
+
+| name                |
+| ------------------- |
+| John Hurt           |
+| Sigourney Weaver    |
+| Yaphet Kotto        |
+| Harry Dean Stanton  |
+| Ian Holm            |
+| Tom Skerritt        |
+| Veronica Cartwright |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Harrison Ford movies
+
+```sql
+-- List the films in which 'Harrison Ford' has appeared
+SELECT title
+FROM movie 
+JOIN casting
+ON movie.id = casting.movieid
+WHERE actorid = (
+  SELECT id 
+  FROM actor 
+  WHERE name = 'Harrison Ford')
+```
+
+| title                    |
+| ------------------------ |
+| A Hundred and One Nights |
+| Air Force One            |
+| American Graffiti        |
+| Apocalypse Now           |
+| Clear and Present Danger |
+| Cowboys & Aliens         |
+| Crossing Over            |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Harrison Ford as a supporting actor
+
+```sql
+-- List the films where 'Harrison Ford' has appeared - but not in the starring role. 
+-- [Note: the ord field of casting gives the position of the actor. If ord=1 then this actor is in the starring role]
+SELECT title
+FROM movie 
+JOIN casting
+ON movie.id = casting.movieid
+WHERE 
+  actorid = (
+    SELECT id 
+    FROM actor 
+    WHERE name = 'Harrison Ford') AND 
+  ord <> 1
+```
+
+| title                    |
+| ------------------------ |
+| A Hundred and One Nights |
+| American Graffiti        |
+| Apocalypse Now           |
+| Cowboys & Aliens         |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Lead actors in 1962 movies
+
+```sql
+-- List the films together with the leading star for all 1962 films.
+SELECT title, name
+FROM actor
+JOIN casting
+ON casting.actorid = actor.id
+JOIN movie
+ON movie.id = casting.movieid
+WHERE 
+  movie.yr = 1962 AND
+  casting.ord = 1
+```
+
+| title                        | name            |
+| ---------------------------- | --------------- |
+| A Kind of Loving             | Alan Bates      |
+| A Symposium on Popular Songs | Paul Frees      |
+| A Very Private Affair        | Brigitte Bardot |
+| An Autumn Afternoon          | Chishu Ryu      |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Busy years for Rock Hudson
+
+```sql
+-- Which were the busiest years for 'Rock Hudson'?
+-- show the year and the number of movies he made each year for any year in which he made more than 2 movies.
+SELECT yr, count(*) AS 'number of movies'
+FROM movie
+JOIN casting
+ON casting.movieid = movie.id
+WHERE actorid = (SELECT id FROM actor WHERE name='Rock Hudson')
+GROUP BY yr
+having count(*) > 2
+```
+
+| yr   | number of movies |
+| ---- | ---------------- |
+| 1953 | 5                |
+| 1961 | 3                |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Lead actor in Julie Andrews movies
+
+```sql
+-- List the film title and the leading actor for all of the films 'Julie Andrews' played in.
+SELECT title, name
+FROM actor 
+JOIN casting
+ON casting.actorid = actor.id
+JOIN movie
+ON movie.id = casting.movieid
+WHERE 
+  movieid IN (
+    SELECT movieid 
+    FROM casting 
+    WHERE actorid IN (
+      SELECT id 
+      FROM actor 
+      WHERE name = 'Julie Andrews')) AND 
+  ord = 1
+```
+
+| title              | name           |
+| ------------------ | -------------- |
+| 10                 | Dudley Moore   |
+| Darling Lili       | Julie Andrews  |
+| Despicable Me      | Steve Carell   |
+| Duet for One       | Julie Andrews  |
+| Hawaii	Julie       | Andrews        |
+| Little Miss Marker | Walter Matthau |
+
+**[⬆ back to top](#table-of-contents)**
+
+### Actors with 15 leading roles
+
+```sql
+-- Obtain a list, in alphabetical order, of actors who've had at least 15 starring roles.
+SELECT name
+FROM actor
+JOIN casting
+ON casting.actorid = actor.id
+GROUP BY name
+HAVING sum(case ord when 1 then 1 else 0 end) >= 15
+```
+
+| name                  |
+| --------------------- |
+| Adam Sandler          |
+| Al Pacino             |
+| Anthony Hopkins       |
+| Antonio Banderas      |
+| Arnold Schwarzenegger |
+| ...                   |
+
+**[⬆ back to top](#table-of-contents)**
+
+### List the films released in the year 1978
+
+```sql
+-- List the films released in the year 1978 ordered by the number of actors in the cast, then by title.
+SELECT title, COUNT(actorid) AS count
+FROM movie
+JOIN casting
+ON movie.id = movieid
+WHERE yr = 1978
+GROUP BY title 
+ORDER BY COUNT(actorid) DESC, title
+```
+
+| title                          | count |
+| ------------------------------ | ----- |
+| The Bad News Bears Go to Japan | 50    |
+| The Swarm                      | 37    |
+| Grease                         | 28    |
+| American Hot Wax               | 27    |
+| The Boys from Brazil           | 26    |
+| ...                            | ...   |
+
+**[⬆ back to top](#table-of-contents)**
+
+### List all the people who have worked with 'Art Garfunkel'.
+
+```sql
+SELECT DISTINCT name
+FROM actor
+JOIN casting
+ON actor.id = actorid 
+WHERE 
+  movieid IN (
+    SELECT movieid
+    FROM actor
+    JOIN casting
+    ON actor.id = actorid AND name = 'Art Garfunkel') AND 
+  name <> 'Art Garfunkel'
+```
+
+| name           |
+| -------------- |
+| Mark Ruffalo   |
+| Ryan Phillippe |
+| Mike Myers     |
+| Neve Campbell  |
+| Salma Hayek    |
+| ...            |
 
 **[⬆ back to top](#table-of-contents)**
 
@@ -1849,7 +2239,3 @@ ORDER BY mdate, matchid, team1, team2
 ## **Self JOIN**
 
 **[⬆ back to top](#table-of-contents)**
-select 	emp_name, dept_name
-from employees
-inner join departments
-on employees.dept_id = departments.dept_id
